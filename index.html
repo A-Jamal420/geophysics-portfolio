@@ -1,269 +1,1199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mohamed Ahmed Hassan | Geophysics Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-deep: #0f172a; /* Deep slate/bedrock */
-            --bg-surface: #1e293b; /* Upper crust */
-            --accent: #f59e0b; /* Magma/Amber */
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mohamed Ahmed Hassan | Geophysics Portfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            earth: {
+              950: '#0a0908',
+              900: '#1a1410',
+              800: '#2a2118',
+              700: '#3d3022',
+              600: '#56432f',
+              500: '#6e5639',
+              400: '#8b6f4e',
+              300: '#b8976e',
+              200: '#d4b98a',
+              100: '#e8d5b0',
+              50: '#f5ede0',
+            },
+            seismic: {
+              DEFAULT: '#00b4d8',
+              light: '#48cae4',
+              dark: '#0077b6',
+              glow: '#90e0ef',
+            },
+            mantle: {
+              DEFAULT: '#c77b30',
+              light: '#d4944c',
+              dark: '#a0522d',
+            },
+            strata: {
+              deep: '#1b2838',
+              mid: '#2d4a3e',
+              surface: '#4a6741',
+            }
+          },
+          fontFamily: {
+            display: ['Outfit', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
         }
+      }
+    }
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: #0a0908;
+      color: #e8d5b0;
+      overflow-x: hidden;
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-deep);
-            color: var(--text-main);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1a1410; }
+    ::-webkit-scrollbar-thumb { background: #6e5639; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #8b6f4e; }
 
-        /* Hero Section (The Surface) */
-        .hero {
-            background: linear-gradient(135deg, rgba(15,23,42,0.9) 0%, rgba(30,41,59,0.9) 100%), 
-                        url('https://www.transparenttextures.com/patterns/stardust.png');
-            text-align: center;
-            padding: 5rem 2rem 3rem;
-            border-bottom: 4px solid var(--accent);
-        }
+    /* Seismic Wave Canvas */
+    #waveCanvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 1;
+    }
 
-        .profile-pic {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid var(--accent);
-            box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
-            margin-bottom: 1.5rem;
-            transition: transform 0.3s ease;
-        }
+    /* Earth Layer Stripes */
+    .earth-layers {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 40%;
+      z-index: 2;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(26,20,16,0.3) 10%,
+        rgba(45,74,62,0.4) 25%,
+        rgba(27,40,56,0.5) 45%,
+        rgba(42,33,24,0.6) 65%,
+        rgba(160,82,45,0.3) 85%,
+        rgba(199,123,48,0.2) 100%
+      );
+      pointer-events: none;
+    }
 
-        .profile-pic:hover {
-            transform: scale(1.05);
-        }
+    /* Floating Particles */
+    .particle {
+      position: absolute;
+      width: 2px; height: 2px;
+      background: rgba(0, 180, 216, 0.6);
+      border-radius: 50%;
+      animation: floatParticle linear infinite;
+    }
 
-        .hero h1 {
-            margin: 0;
-            font-size: 3rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
+    @keyframes floatParticle {
+      0% { transform: translateY(0) translateX(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+    }
 
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--accent);
-            margin-top: 10px;
-            font-weight: 300;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
+    /* Seismic Pulse */
+    .seismic-pulse {
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 180, 216, 0.3);
+      animation: seismicPulse 4s ease-out infinite;
+    }
 
-        .contact-links {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 25px;
-            flex-wrap: wrap;
-        }
+    @keyframes seismicPulse {
+      0% { width: 0; height: 0; opacity: 0.6; }
+      100% { width: 600px; height: 600px; opacity: 0; }
+    }
 
-        .contact-links a {
-            color: var(--text-main);
-            text-decoration: none;
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid var(--accent);
-            padding: 10px 20px;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
+    /* Strata Lines */
+    .strata-line {
+      position: absolute;
+      left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(0,180,216,0.15) 20%, 
+        rgba(0,180,216,0.3) 50%, 
+        rgba(0,180,216,0.15) 80%, 
+        transparent 100%
+      );
+      animation: strataGlow 3s ease-in-out infinite alternate;
+    }
 
-        .contact-links a:hover {
-            background: var(--accent);
-            color: var(--bg-deep);
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.4);
-        }
+    @keyframes strataGlow {
+      0% { opacity: 0.3; }
+      100% { opacity: 0.8; }
+    }
 
-        /* Container & Cards (The Strata Layers) */
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
-        }
+    /* Depth Section Styling */
+    .depth-section {
+      position: relative;
+      border-left: 2px solid rgba(0, 180, 216, 0.2);
+      padding-left: 2rem;
+      transition: all 0.5s ease;
+    }
 
-        .layer {
-            background: var(--bg-surface);
-            padding: 2.5rem;
-            margin-bottom: 2.5rem;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            position: relative;
-            border-left: 5px solid var(--accent);
-            transition: transform 0.3s ease;
-        }
+    .depth-section::before {
+      content: '';
+      position: absolute;
+      left: -6px; top: 0;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #00b4d8;
+      box-shadow: 0 0 10px rgba(0, 180, 216, 0.5);
+      transition: all 0.3s ease;
+    }
 
-        .layer:hover {
-            transform: translateY(-5px);
-        }
+    .depth-section:hover {
+      border-left-color: rgba(0, 180, 216, 0.5);
+    }
 
-        h2 {
-            color: var(--accent);
-            margin-top: 0;
-            font-size: 1.8rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+    .depth-section:hover::before {
+      transform: scale(1.5);
+      box-shadow: 0 0 20px rgba(0, 180, 216, 0.8);
+    }
 
-        h2::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: rgba(245, 158, 11, 0.3);
-            margin-left: 15px;
-        }
+    /* Skill Bars - Seismic Style */
+    .skill-wave {
+      position: relative;
+      height: 36px;
+      background: rgba(26,20,16,0.6);
+      border-radius: 4px;
+      overflow: hidden;
+      border: 1px solid rgba(0,180,216,0.1);
+    }
 
-        h3 {
-            color: var(--text-main);
-            margin-bottom: 5px;
-        }
+    .skill-wave-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #0077b6, #00b4d8);
+      position: relative;
+      transition: width 1.5s ease;
+      width: 0;
+    }
 
-        p {
-            color: var(--text-muted);
-        }
+    .skill-wave-fill::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 40px;
+      background: linear-gradient(90deg, transparent, rgba(144,224,239,0.4));
+      animation: waveShimmer 2s ease-in-out infinite;
+    }
 
-        /* Grid Layouts */
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
+    @keyframes waveShimmer {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
 
-        /* Tags */
-        .tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 15px;
-        }
+    /* Card Styling */
+    .geo-card {
+      background: linear-gradient(135deg, rgba(26,20,16,0.8), rgba(42,33,24,0.6));
+      border: 1px solid rgba(0,180,216,0.1);
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
 
-        .tag {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--accent);
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            border: 1px solid rgba(245, 158, 11, 0.2);
-        }
+    .geo-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #00b4d8, transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
 
-        /* Lists */
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
+    .geo-card:hover {
+      border-color: rgba(0,180,216,0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,180,216,0.1);
+    }
 
-        ul li {
-            position: relative;
-            padding-left: 25px;
-            margin-bottom: 15px;
-            color: var(--text-muted);
-        }
+    .geo-card:hover::before {
+      opacity: 1;
+    }
 
-        ul li::before {
-            content: "▹";
-            position: absolute;
-            left: 0;
-            color: var(--accent);
-            font-weight: bold;
-        }
+    /* Waveform Separator */
+    .wave-separator {
+      position: relative;
+      height: 60px;
+      overflow: hidden;
+    }
 
-        .highlight {
-            color: var(--text-main);
-            font-weight: 600;
-        }
+    .wave-separator svg {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+    }
 
-        /* Responsive */
-        @media(max-width: 768px) {
-            .grid-2 { grid-template-columns: 1fr; }
-            .hero h1 { font-size: 2.2rem; }
-        }
-    </style>
+    /* Nav */
+    .nav-link {
+      position: relative;
+      padding: 0.5rem 0;
+      color: #b8976e;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 2px;
+      background: #00b4d8;
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: #00b4d8;
+    }
+
+    .nav-link:hover::after, .nav-link.active::after {
+      width: 100%;
+    }
+
+    /* Reveal Animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* Compass Animation */
+    @keyframes compassSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .compass-ring {
+      animation: compassSpin 20s linear infinite;
+    }
+
+    /* Depth marker */
+    .depth-marker {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: rgba(0,180,216,0.5);
+      position: absolute;
+      left: -3.5rem;
+      top: 0;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Mobile menu */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+
+    /* Noise texture overlay */
+    .noise-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* Glowing text */
+    .glow-text {
+      text-shadow: 0 0 20px rgba(0,180,216,0.3), 0 0 40px rgba(0,180,216,0.1);
+    }
+
+    /* Responsive depth marker hide on mobile */
+    @media (max-width: 768px) {
+      .depth-marker { display: none; }
+      .depth-section { padding-left: 1.5rem; }
+    }
+
+    /* Typewriter cursor */
+    .cursor-blink {
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+  </style>
 </head>
-<body>
+<body class="relative">
+  <!-- Noise overlay -->
+  <div class="noise-overlay"></div>
 
-    <header class="hero">
-        <img src="profile.jpg" alt="Mohamed Ahmed Hassan" class="profile-pic">
-        <h1>Mohamed Ahmed Hassan</h1>
-        <p>Geophysics & Subsurface Exploration</p>
-        
-        <div class="contact-links">
-            <a href="mailto:md2212607@gmail.com">Email Me</a>
-            <a href="https://linkedin.com/in/mohamed-ahmed-237123335" target="_blank">LinkedIn</a>
-            <a href="tel:01154677102">Call 01154677102</a>
+  <!-- Navigation -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#hero" class="flex items-center gap-2 group">
+        <div class="w-8 h-8 rounded-full border-2 border-seismic flex items-center justify-center group-hover:bg-seismic/20 transition-all duration-300">
+          <div class="w-2 h-2 bg-seismic rounded-full"></div>
         </div>
-    </header>
+        <span class="font-mono text-sm text-seismic tracking-wider">GEO::PORTFOLIO</span>
+      </a>
 
-    <div class="container">
-        
-        <div class="layer" id="objective">
-            <h2>Core Objective</h2>
-            <p>Third-year Geophysics student at Assiut University with a strong interest in <span class="highlight">geophysical exploration</span> and <span class="highlight">subsurface data interpretation</span>. Active member of the SEG student chapter with leadership experience in media and finance. A STEM school graduate with strong English communication skills, seeking to leverage a rigorous technical background in the Energy Industry and Field Operations.</p>
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#about" class="nav-link text-sm font-medium">About</a>
+        <a href="#education" class="nav-link text-sm font-medium">Education</a>
+        <a href="#arsenal" class="nav-link text-sm font-medium">Arsenal</a>
+        <a href="#fieldwork" class="nav-link text-sm font-medium">Field Work</a>
+        <a href="#contact" class="nav-link text-sm font-medium">Contact</a>
+      </div>
+
+      <!-- Mobile Menu Toggle -->
+      <button id="menuBtn" class="md:hidden text-earth-100 hover:text-seismic transition-colors">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="mobile-menu fixed inset-0 z-50 bg-earth-950/98 backdrop-blur-xl flex flex-col items-center justify-center gap-8">
+    <button id="closeMenu" class="absolute top-6 right-6 text-earth-100 hover:text-seismic transition-colors">
+      <i data-lucide="x" class="w-6 h-6"></i>
+    </button>
+    <a href="#about" class="mobile-nav-link text-2xl font-display font-semibold text-earth-100 hover:text-seismic transition-colors">About</a>
+    <a href="#education" class="mobile-nav-link text-2xl font-display font-semibold text-earth-100 hover:text-seismic transition-colors">Education</a>
+    <a href="#arsenal" class="mobile-nav-link text-2xl font-display font-semibold text-earth-100 hover:text-seismic transition-colors">Arsenal</a>
+    <a href="#fieldwork" class="mobile-nav-link text-2xl font-display font-semibold text-earth-100 hover:text-seismic transition-colors">Field Work</a>
+    <a href="#contact" class="mobile-nav-link text-2xl font-display font-semibold text-earth-100 hover:text-seismic transition-colors">Contact</a>
+  </div>
+
+  <!-- Hero Section -->
+  <section id="hero" class="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <canvas id="waveCanvas"></canvas>
+    <div class="earth-layers"></div>
+
+    <!-- Floating particles container -->
+    <div id="particles" class="absolute inset-0 z-2 pointer-events-none"></div>
+
+    <!-- Strata lines -->
+    <div class="strata-line" style="top: 20%; animation-delay: 0s;"></div>
+    <div class="strata-line" style="top: 35%; animation-delay: 0.5s;"></div>
+    <div class="strata-line" style="top: 55%; animation-delay: 1s;"></div>
+    <div class="strata-line" style="top: 72%; animation-delay: 1.5s;"></div>
+    <div class="strata-line" style="top: 88%; animation-delay: 2s;"></div>
+
+    <!-- Hero Content -->
+    <div class="relative z-10 text-center px-6 max-w-4xl">
+      <div class="mb-6 reveal">
+        <span class="inline-block px-4 py-1.5 rounded-full border border-seismic/30 bg-seismic/5 text-seismic text-xs font-mono tracking-wider uppercase">
+          Geophysics Student · SEG Member · STEM Graduate
+        </span>
+      </div>
+      <h1 class="text-5xl md:text-7xl lg:text-8xl font-display font-800 leading-tight mb-4 reveal reveal-delay-1">
+        <span class="text-earth-50">Mohamed</span><br>
+        <span class="glow-text text-seismic">Ahmed Hassan</span>
+      </h1>
+      <p class="text-lg md:text-xl text-earth-300 max-w-2xl mx-auto mb-8 reveal reveal-delay-2 font-light">
+        Unraveling the Earth's hidden narratives through seismic data, subsurface modeling, and field exploration.
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-4 reveal reveal-delay-3">
+        <a href="#about" class="group px-8 py-3 bg-seismic text-earth-950 font-semibold rounded-lg hover:bg-seismic-light transition-all duration-300 flex items-center gap-2">
+          Explore Profile
+          <i data-lucide="arrow-down" class="w-4 h-4 group-hover:translate-y-1 transition-transform"></i>
+        </a>
+        <a href="#contact" class="px-8 py-3 border border-earth-600 text-earth-100 rounded-lg hover:border-seismic hover:text-seismic transition-all duration-300">
+          Get in Touch
+        </a>
+      </div>
+
+      <!-- Depth Indicator -->
+      <div class="mt-16 reveal reveal-delay-4">
+        <div class="flex items-center justify-center gap-2 text-earth-500">
+          <div class="w-px h-12 bg-gradient-to-b from-seismic/50 to-transparent"></div>
         </div>
-
-        <div class="layer" id="education">
-            <h2>Education</h2>
-            <div class="grid-2">
-                <div>
-                    <h3>Assiut University</h3>
-                    <p class="highlight">Bachelor's Degree in Geophysics</p>
-                    <p>Location: Assiut, Egypt<br>Expected Graduation: 2027</p>
-                </div>
-                <div>
-                    <h3>Minya STEM School</h3>
-                    <p class="highlight">High School Diploma</p>
-                    <p>Focus: Project-based scientific education<br>Graduated: 2023</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="layer" id="skills">
-            <h2>Technical Arsenal</h2>
-            <p>Proficient in industry-standard geophysical software and subsurface modeling tools:</p>
-            <div class="tags-container">
-                <span class="tag">Oasis Montaj</span>
-                <span class="tag">Res2DInv</span>
-                <span class="tag">ArcGIS</span>
-                <span class="tag">SeisImager</span>
-                <span class="tag">IPI2Win</span>
-                <span class="tag">Microsoft Office Suite (Advanced)</span>
-            </div>
-            
-            <h3 style="margin-top: 30px;">Core Competencies</h3>
-            <div class="tags-container" style="margin-top: 5px;">
-                <span class="tag">Field Operations Safety</span>
-                <span class="tag">Seismic Data Fundamentals</span>
-                <span class="tag">Scientific Research</span>
-                <span class="tag">Team Leadership</span>
-            </div>
-        </div>
-
-        <div class="layer" id="experience">
-            <h2>Field Work & Extracurriculars</h2>
-            <ul>
-                <li><span class="highlight">SEG Student Chapter (Assiut University):</span> Treasurer (2025–Present) & Former Head of Media. Directed media coverage to increase engagement and currently manage financial organization for technical workshops.</li>
-                <li><span class="highlight">Professional Training:</span> Completed a comprehensive Seismic Fundamentals Workshop covering the basics of data acquisition and processing.</li>
-                <li><span class="highlight">Field Certification:</span> Certified in Safety in Field Operations and Introduction to Mud Logging.</li>
-                <li><span class="highlight">Industry Engagement:</span> Active participant in the Africa Geology Conference (2025) to track emerging industry trends.</li>
-                <li><span class="highlight">Capstone Research:</span> Collaborated within a research team at STEM School to execute full project development cycles, perform data analysis, and deliver technical presentations.</li>
-            </ul>
-        </div>
-
+        <p class="text-xs font-mono text-earth-600 mt-2">SCROLL TO EXPLORE DEPTHS</p>
+      </div>
     </div>
 
+    <!-- Compass Decoration -->
+    <div class="absolute top-1/2 -translate-y-1/2 right-8 md:right-16 opacity-10 hidden lg:block">
+      <svg class="compass-ring w-48 h-48" viewBox="0 0 200 200" fill="none">
+        <circle cx="100" cy="100" r="90" stroke="#00b4d8" stroke-width="0.5"/>
+        <circle cx="100" cy="100" r="70" stroke="#00b4d8" stroke-width="0.3"/>
+        <circle cx="100" cy="100" r="50" stroke="#00b4d8" stroke-width="0.2"/>
+        <line x1="100" y1="5" x2="100" y2="195" stroke="#00b4d8" stroke-width="0.3"/>
+        <line x1="5" y1="100" x2="195" y2="100" stroke="#00b4d8" stroke-width="0.3"/>
+        <text x="100" y="18" text-anchor="middle" fill="#00b4d8" font-size="10" font-family="JetBrains Mono">N</text>
+        <text x="188" y="104" text-anchor="middle" fill="#00b4d8" font-size="10" font-family="JetBrains Mono">E</text>
+        <text x="100" y="196" text-anchor="middle" fill="#00b4d8" font-size="10" font-family="JetBrains Mono">S</text>
+        <text x="12" y="104" text-anchor="middle" fill="#00b4d8" font-size="10" font-family="JetBrains Mono">W</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="relative py-24 md:py-32">
+    <div class="absolute inset-0 bg-gradient-to-b from-earth-950 via-earth-900/50 to-earth-950"></div>
+    <div class="strata-line" style="top: 30%; animation-delay: 0.3s; opacity: 0.15;"></div>
+    <div class="strata-line" style="top: 70%; animation-delay: 1.2s; opacity: 0.15;"></div>
+
+    <div class="relative z-10 max-w-6xl mx-auto px-6">
+      <div class="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center">
+        <!-- Image Side -->
+        <div class="lg:w-5/12 reveal">
+          <div class="relative">
+            <div class="absolute -inset-4 bg-gradient-to-r from-seismic/20 to-mantle/20 rounded-2xl blur-xl"></div>
+            <div class="relative rounded-2xl overflow-hidden border border-earth-700/50">
+              <img src="http://static.photos/nature/640x360/42" alt="Mohamed Ahmed Hassan" class="w-full object-cover aspect-[4/5]">
+              <div class="absolute inset-0 bg-gradient-to-t from-earth-950 via-transparent to-transparent opacity-60"></div>
+              <div class="absolute bottom-4 left-4 right-4">
+                <p class="font-mono text-xs text-seismic">~ EXPLORING THE SUBSURFACE ~</p>
+              </div>
+            </div>
+            <!-- Depth scale decoration -->
+            <div class="absolute -right-8 top-0 bottom-0 hidden lg:flex flex-col justify-between py-2">
+              <span class="font-mono text-[0.6rem] text-earth-600">0m</span>
+              <span class="font-mono text-[0.6rem] text-earth-600">500m</span>
+              <span class="font-mono text-[0.6rem] text-earth-600">1000m</span>
+              <span class="font-mono text-[0.6rem] text-earth-600">2000m</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Content Side -->
+        <div class="lg:w-7/12">
+          <div class="reveal">
+            <p class="font-mono text-seismic text-sm mb-3 tracking-wider">// CORE_OBJECTIVE</p>
+            <h2 class="text-3xl md:text-4xl font-display font-bold text-earth-50 mb-6">
+              Decoding the Language<br>
+              <span class="text-seismic">Beneath the Surface</span>
+            </h2>
+          </div>
+
+          <div class="reveal reveal-delay-1">
+            <p class="text-earth-300 leading-relaxed mb-6">
+              Third-year Geophysics student at Assiut University with a strong interest in geophysical exploration and subsurface data interpretation. Active member of the SEG student chapter with leadership experience in media and finance. A STEM school graduate with strong English communication skills, seeking to leverage a rigorous technical background in the Energy Industry and Field Operations.
+            </p>
+          </div>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 reveal reveal-delay-2">
+            <div class="text-center p-4 rounded-xl bg-earth-900/50 border border-earth-700/30">
+              <p class="text-2xl font-bold text-seismic">3rd</p>
+              <p class="text-xs text-earth-400 mt-1">Year Student</p>
+            </div>
+            <div class="text-center p-4 rounded-xl bg-earth-900/50 border border-earth-700/30">
+              <p class="text-2xl font-bold text-mantle-light">SEG</p>
+              <p class="text-xs text-earth-400 mt-1">Member & Leader</p>
+            </div>
+            <div class="text-center p-4 rounded-xl bg-earth-900/50 border border-earth-700/30">
+              <p class="text-2xl font-bold text-seismic">2027</p>
+              <p class="text-xs text-earth-400 mt-1">Expected Grad</p>
+            </div>
+            <div class="text-center p-4 rounded-xl bg-earth-900/50 border border-earth-700/30">
+              <p class="text-2xl font-bold text-mantle-light">STEM</p>
+              <p class="text-xs text-earth-400 mt-1">School Grad</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Waveform Separator -->
+  <div class="wave-separator relative">
+    <svg viewBox="0 0 1440 60" fill="none" preserveAspectRatio="none" class="w-full h-[60px]">
+      <path d="M0 30 Q 180 5 360 30 T 720 30 T 1080 30 T 1440 30" stroke="rgba(0,180,216,0.3)" stroke-width="1" fill="none"/>
+      <path d="M0 30 Q 180 55 360 30 T 720 30 T 1080 30 T 1440 30" stroke="rgba(199,123,48,0.2)" stroke-width="1" fill="none"/>
+    </svg>
+  </div>
+
+  <!-- Education Section -->
+  <section id="education" class="relative py-24 md:py-32">
+    <div class="absolute inset-0 bg-gradient-to-b from-earth-950 via-strata-deep/30 to-earth-950"></div>
+    <div class="strata-line" style="top: 25%; animation-delay: 0.7s; opacity: 0.1;"></div>
+    <div class="strata-line" style="top: 50%; animation-delay: 0.2s; opacity: 0.1;"></div>
+
+    <div class="relative z-10 max-w-5xl mx-auto px-6">
+      <div class="text-center mb-16 reveal">
+        <p class="font-mono text-seismic text-sm mb-3 tracking-wider">// STRATIGRAPHIC_RECORD</p>
+        <h2 class="text-3xl md:text-5xl font-display font-bold text-earth-50">
+          Educational <span class="text-seismic">Deposits</span>
+        </h2>
+        <p class="text-earth-400 mt-4 max-w-lg mx-auto">Layers of knowledge accumulated through rigorous academic programs and project-based learning.</p>
+      </div>
+
+      <div class="space-y-8">
+        <!-- Assiut University -->
+        <div class="depth-section reveal">
+          <span class="depth-marker">0-2000m</span>
+          <div class="geo-card p-6 md:p-8">
+            <div class="flex flex-col md:flex-row md:items-start gap-6">
+              <div class="flex-shrink-0">
+                <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-seismic/20 to-seismic/5 border border-seismic/20 flex items-center justify-center">
+                  <i data-lucide="graduation-cap" class="w-8 h-8 text-seismic"></i>
+                </div>
+              </div>
+              <div class="flex-1">
+                <div class="flex flex-wrap items-center gap-3 mb-2">
+                  <h3 class="text-xl md:text-2xl font-display font-bold text-earth-50">Assiut University</h3>
+                  <span class="px-3 py-0.5 bg-seismic/10 border border-seismic/30 rounded-full text-seismic text-xs font-mono">CURRENT</span>
+                </div>
+                <p class="text-lg text-mantle-light font-medium mb-2">Bachelor's Degree in Geophysics</p>
+                <div class="flex flex-wrap gap-4 text-sm text-earth-400 mb-4">
+                  <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> Assiut, Egypt</span>
+                  <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> Expected 2027</span>
+                </div>
+                <p class="text-earth-300 text-sm leading-relaxed">Immersed in the quantitative study of Earth's physical properties, with focus on seismic methods, potential field theory, and subsurface data interpretation.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Minya STEM School -->
+        <div class="depth-section reveal reveal-delay-2">
+          <span class="depth-marker">2000-3000m</span>
+          <div class="geo-card p-6 md:p-8">
+            <div class="flex flex-col md:flex-row md:items-start gap-6">
+              <div class="flex-shrink-0">
+                <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-mantle/20 to-mantle/5 border border-mantle/20 flex items-center justify-center">
+                  <i data-lucide="microscope" class="w-8 h-8 text-mantle-light"></i>
+                </div>
+              </div>
+              <div class="flex-1">
+                <div class="flex flex-wrap items-center gap-3 mb-2">
+                  <h3 class="text-xl md:text-2xl font-display font-bold text-earth-50">Minya STEM School</h3>
+                  <span class="px-3 py-0.5 bg-mantle/10 border border-mantle/30 rounded-full text-mantle-light text-xs font-mono">COMPLETED</span>
+                </div>
+                <p class="text-lg text-mantle-light font-medium mb-2">High School Diploma</p>
+                <div class="flex flex-wrap gap-4 text-sm text-earth-400 mb-4">
+                  <span class="flex items-center gap-1"><i data-lucide="beaker" class="w-3 h-3"></i> Project-based scientific education</span>
+                  <span class="flex items-center gap-1"><i data-lucide="calendar" class="w-3 h-3"></i> Graduated 2023</span>
+                </div>
+                <p class="text-earth-300 text-sm leading-relaxed">Developed strong foundations in scientific research, data analysis, and collaborative project execution through rigorous STEM curriculum and capstone research projects.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Decorative Depth Column -->
+      <div class="hidden lg:block absolute right-8 top-1/2 -translate-y-1/2 opacity-20">
+        <svg width="40" height="300" viewBox="0 0 40 300">
+          <line x1="20" y1="0" x2="20" y2="300" stroke="#00b4d8" stroke-width="1" stroke-dasharray="4,4"/>
+          <circle cx="20" cy="30" r="4" fill="#00b4d8"/>
+          <circle cx="20" cy="150" r="4" fill="#c77b30"/>
+          <text x="30" y="35" fill="#00b4d8" font-size="8" font-family="JetBrains Mono">0m</text>
+          <text x="30" y="155" fill="#c77b30" font-size="8" font-family="JetBrains Mono">2000m</text>
+          <text x="30" y="285" fill="#6e5639" font-size="8" font-family="JetBrains Mono">3000m</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Arsenal -->
+  <section id="arsenal" class="relative py-24 md:py-32">
+    <div class="absolute inset-0 bg-gradient-to-b from-earth-950 via-earth-900/40 to-earth-950"></div>
+
+    <div class="relative z-10 max-w-6xl mx-auto px-6">
+      <div class="text-center mb-16 reveal">
+        <p class="font-mono text-seismic text-sm mb-3 tracking-wider">// INSTRUMENT_ARRAY</p>
+        <h2 class="text-3xl md:text-5xl font-display font-bold text-earth-50">
+          Technical <span class="text-seismic">Arsenal</span>
+        </h2>
+        <p class="text-earth-400 mt-4 max-w-lg mx-auto">Industry-standard geophysical software and subsurface modeling tools calibrated for precision.</p>
+      </div>
+
+      <!-- Software Proficiencies -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+        <!-- Oasis Montaj -->
+        <div class="geo-card p-6 reveal">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-lg bg-seismic/10 flex items-center justify-center">
+              <i data-lucide="layers" class="w-5 h-5 text-seismic"></i>
+            </div>
+            <h3 class="font-display font-semibold text-earth-50">Oasis Montaj</h3>
+          </div>
+          <div class="skill-wave">
+            <div class="skill-wave-fill" data-width="85"></div>
+          </div>
+          <p class="text-xs text-earth-400 mt-2">Potential field data processing & mapping</p>
+        </div>
+
+        <!-- Res2DInv -->
+        <div class="geo-card p-6 reveal reveal-delay-1">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-lg bg-seismic/10 flex items-center justify-center">
+              <i data-lucide="grid-3x3" class="w-5 h-5 text-seismic"></i>
+            </div>
+            <h3 class="font-display font-semibold text-earth-50">Res2DInv</h3>
+          </div>
+          <div class="skill-wave">
+            <div class="skill-wave-fill" data-width="80"></div>
+          </div>
+          <p class="text-xs text-earth-400 mt-2">2D resistivity inversion modeling</p>
+        </div>
+
+        <!-- ArcGIS -->
+        <div class="geo-card p-6 reveal reveal-delay-2">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-lg bg-mantle/10 flex items-center justify-center">
+              <i data-lucide="map" class="w-5 h-5 text-mantle-light"></i>
+            </div>
+            <h3 class="font-display font-semibold text-earth-50">ArcGIS</h3>
+          </div>
+          <div class="skill-wave">
+            <div class="skill-wave-fill" data-width="78" style="background: linear-gradient(90deg, #a0522d, #d4944c);"></div>
+          </div>
+          <p class="text-xs text-earth-400 mt-2">Spatial analysis & geospatial mapping</p>
+        </div>
+
+        <!-- SeisImager -->
+        <div class="geo-card p-6 reveal reveal-delay-3">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-lg bg-seismic/10 flex items-center justify-center">
+              <i data-lucide="activity" class="w-5 h-5 text-seismic"></i>
+            </div>
+            <h3 class="font-display font-semibold text-earth-50">SeisImager</h3>
+          </div>
+          <div class="skill-wave">
+            <div class="skill-wave-fill" data-width="75"></div>
+          </div>
+          <p class="text-xs text-earth-400 mt-2">Seismic refraction interpretation</p>
+        </div>
+
+        <!-- IPI2Win -->
+        <div class="geo-card p-6 reveal reveal-delay-4">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-lg bg-seismic/10 flex items-center justify-center">
+              <i data-lucide="bar-chart-3" class="w-5 h-5 text-seismic"></i>
+            </div>
+            <h3 class="font-display font-semibold text-earth-50">IPI2Win</h3>
+          </div>
+          <div class="skill-wave">
+            <div class="skill-wave-fill" data-width="72"></div>
+          </div>
+          <p class="text-xs text-earth-400 mt-2">DC resistivity data interpretation</p>
+        </div>
+
+        <!-- MS Office -->
+        <div class="geo-card p-6 reveal reveal-delay-5">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-lg bg-mantle/10 flex items-center justify-center">
+              <i data-lucide="file-spreadsheet" class="w-5 h-5 text-mantle-light"></i>
+            </div>
+            <h3 class="font-display font-semibold text-earth-50">MS Office Suite</h3>
+          </div>
+          <div class="skill-wave">
+            <div class="skill-wave-fill" data-width="90" style="background: linear-gradient(90deg, #a0522d, #d4944c);"></div>
+          </div>
+          <p class="text-xs text-earth-400 mt-2">Advanced data analysis & presentation</p>
+        </div>
+      </div>
+
+      <!-- Core Competencies -->
+      <div class="reveal">
+        <div class="text-center mb-8">
+          <p class="font-mono text-seismic/70 text-xs tracking-wider">// CORE_COMPETENCIES</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="group p-4 rounded-xl bg-earth-900/30 border border-earth-700/20 hover:border-seismic/40 transition-all duration-300 text-center">
+            <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-seismic/5 border border-seismic/20 flex items-center justify-center group-hover:bg-seismic/10 transition-all">
+              <i data-lucide="hard-hat" class="w-5 h-5 text-seismic"></i>
+            </div>
+            <p class="text-sm font-medium text-earth-200">Field Operations</p>
+          </div>
+          <div class="group p-4 rounded-xl bg-earth-900/30 border border-earth-700/20 hover:border-seismic/40 transition-all duration-300 text-center">
+            <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-seismic/5 border border-seismic/20 flex items-center justify-center group-hover:bg-seismic/10 transition-all">
+              <i data-lucide="shield-check" class="w-5 h-5 text-seismic"></i>
+            </div>
+            <p class="text-sm font-medium text-earth-200">Safety Protocols</p>
+          </div>
+          <div class="group p-4 rounded-xl bg-earth-900/30 border border-earth-700/20 hover:border-seismic/40 transition-all duration-300 text-center">
+            <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-seismic/5 border border-seismic/20 flex items-center justify-center group-hover:bg-seismic/10 transition-all">
+              <i data-lucide="waves" class="w-5 h-5 text-seismic"></i>
+            </div>
+            <p class="text-sm font-medium text-earth-200">Seismic Data</p>
+          </div>
+          <div class="group p-4 rounded-xl bg-earth-900/30 border border-earth-700/20 hover:border-seismic/40 transition-all duration-300 text-center">
+            <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-seismic/5 border border-seismic/20 flex items-center justify-center group-hover:bg-seismic/10 transition-all">
+              <i data-lucide="flask-conical" class="w-5 h-5 text-seismic"></i>
+            </div>
+            <p class="text-sm font-medium text-earth-200">Research</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Geophysics Visual Section -->
+  <section class="relative py-16 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="http://static.photos/nature/1200x630/88" alt="Field Operations" class="w-full h-full object-cover opacity-20">
+      <div class="absolute inset-0 bg-gradient-to-b from-earth-950 via-earth-950/80 to-earth-950"></div>
+    </div>
+    <!-- Animated wave decoration -->
+    <div class="relative z-10 max-w-4xl mx-auto px-6 text-center">
+      <div class="reveal">
+        <p class="font-mono text-seismic text-sm mb-6 tracking-wider">:: RECORD_002 //</p>
+        <blockquote class="text-2xl md:text-3xl font-display font-light text-earth-200 italic leading-relaxed">
+          "The subsurface tells a story that only<br>
+          <span class="text-seismic font-medium not-italic">geophysics can read</span>"
+        </blockquote>
+        <div class="mt-8 flex items-center justify-center gap-2 text-earth-500">
+          <div class="w-12 h-px bg-earth-600"></div>
+          <i data-lucide="compass" class="w-4 h-4 text-seismic"></i>
+          <div class="w-12 h-px bg-earth-600"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Field Work & Extracurriculars -->
+  <section id="fieldwork" class="relative py-24 md:py-32">
+    <div class="absolute inset-0 bg-gradient-to-b from-earth-950 via-earth-900/30 to-earth-950"></div>
+    <div class="strata-line" style="top: 40%; animation-delay: 0.4s; opacity: 0.08;"></div>
+
+    <div class="relative z-10 max-w-5xl mx-auto px-6">
+      <div class="text-center mb-16 reveal">
+        <p class="font-mono text-seismic text-sm mb-3 tracking-wider">// FIELD_LOG_ENTRIES</p>
+        <h2 class="text-3xl md:text-5xl font-display font-bold text-earth-50">
+          Field Work & <span class="text-seismic">Extracurriculars</span>
+        </h2>
+        <p class="text-earth-400 mt-4 max-w-lg mx-auto">Geological traverses, professional training, and community leadership beyond the classroom.</p>
+      </div>
+
+      <div class="space-y-6">
+        <!-- SEG Student Chapter -->
+        <div class="depth-section reveal">
+          <span class="depth-marker">UNIT_01</span>
+          <div class="geo-card p-6 md:p-8 group hover:cursor-default">
+            <div class="flex items-start gap-4">
+              <div class="flex-shrink-0 mt-1">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-seismic/20 to-seismic/5 border border-seismic/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i data-lucide="users" class="w-6 h-6 text-seismic"></i>
+                </div>
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-3 mb-2">
+                  <h3 class="text-lg md:text-xl font-display font-bold text-earth-50">SEG Student Chapter — Assiut University</h3>
+                  <span class="px-2 py-0.5 bg-seismic/10 border border-seismic/30 rounded text-seismic text-[10px] font-mono">LEADERSHIP</span>
+                </div>
+                <p class="text-earth-300 text-sm leading-relaxed">
+                  <span class="text-mantle-light font-medium">Treasurer (2025–Present)</span> & Former <span class="text-mantle-light font-medium">Head of Media</span>. Directed media coverage to increase engagement and currently manage financial organization for technical workshops.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Professional Training -->
+        <div class="depth-section reveal reveal-delay-1">
+          <span class="depth-marker">UNIT_02</span>
+          <div class="geo-card p-6 md:p-8 group hover:cursor-default">
+            <div class="flex items-start gap-4">
+              <div class="flex-shrink-0 mt-1">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-seismic/20 to-seismic/5 border border-seismic/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i data-lucide="waves" class="w-6 h-6 text-seismic"></i>
+                </div>
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-3 mb-2">
+                  <h3 class="text-lg md:text-xl font-display font-bold text-earth-50">Seismic Fundamentals Workshop</h3>
+                  <span class="px-2 py-0.5 bg-mantle/10 border border-mantle/30 rounded text-mantle-light text-[10px] font-mono">TRAINING</span>
+                </div>
+                <p class="text-earth-300 text-sm leading-relaxed">
+                  Completed a comprehensive workshop covering the fundamentals of seismic data acquisition and processing — essential skills for subsurface exploration.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Field Certification -->
+        <div class="depth-section reveal reveal-delay-2">
+          <span class="depth-marker">UNIT_03</span>
+          <div class="geo-card p-6 md:p-8 group hover:cursor-default">
+            <div class="flex items-start gap-4">
+              <div class="flex-shrink-0 mt-1">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-mantle/20 to-mantle/5 border border-mantle/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i data-lucide="badge-check" class="w-6 h-6 text-mantle-light"></i>
+                </div>
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-3 mb-2">
+                  <h3 class="text-lg md:text-xl font-display font-bold text-earth-50">Field Certifications</h3>
+                  <span class="px-2 py-0.5 bg-mantle/10 border border-mantle/30 rounded text-mantle-light text-[10px] font-mono">CERTIFIED</span>
+                </div>
+                <p class="text-earth-300 text-sm leading-relaxed">
+                  Certified in <span class="text-mantle-light font-medium">Safety in Field Operations</span> and <span class="text-mantle-light font-medium">Introduction to Mud Logging</span> — demonstrating commitment to field readiness and operational safety.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Industry Engagement -->
+        <div class="depth-section reveal reveal-delay-3">
+          <span class="depth-marker">UNIT_04</span>
+          <div class="geo-card p-6 md:p-8 group hover:cursor-default">
+            <div class="flex items-start gap-4">
+              <div class="flex-shrink-0 mt-1">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-seismic/20 to-seismic/5 border border-seismic/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i data-lucide="globe" class="w-6 h-6 text-seismic"></i>
+                </div>
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-3 mb-2">
+                  <h3 class="text-lg md:text-xl font-display font-bold text-earth-50">Africa Geology Conference 2025</h3>
+                  <span class="px-2 py-0.5 bg-seismic/10 border border-seismic/30 rounded text-seismic text-[10px] font-mono">CONFERENCE</span>
+                </div>
+                <p class="text-earth-300 text-sm leading-relaxed">
+                  Active participant in the Africa Geology Conference (2025), tracking emerging industry trends and building professional connections in the geoscience community.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Capstone Research -->
+        <div class="depth-section reveal reveal-delay-4">
+          <span class="depth-marker">UNIT_05</span>
+          <div class="geo-card p-6 md:p-8 group hover:cursor-default">
+            <div class="flex items-start gap-4">
+              <div class="flex-shrink-0 mt-1">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-mantle/20 to-mantle/5 border border-mantle/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i data-lucide="flask-conical" class="w-6 h-6 text-mantle-light"></i>
+                </div>
+              </div>
+              <div>
+                <div class="flex flex-wrap items-center gap-3 mb-2">
+                  <h3 class="text-lg md:text-xl font-display font-bold text-earth-50">Capstone Research — STEM School</h3>
+                  <span class="px-2 py-0.5 bg-mantle/10 border border-mantle/30 rounded text-mantle-light text-[10px] font-mono">RESEARCH</span>
+                </div>
+                <p class="text-earth-300 text-sm leading-relaxed">
+                  Collaborated within a research team to execute full project development cycles, perform data analysis, and deliver technical presentations — building a foundation in scientific methodology.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="relative py-24 md:py-32">
+    <div class="absolute inset-0 bg-gradient-to-b from-earth-950 via-strata-deep/20 to-earth-950"></div>
+
+    <div class="relative z-10 max-w-4xl mx-auto px-6">
+      <div class="text-center mb-12 reveal">
+        <p class="font-mono text-seismic text-sm mb-3 tracking-wider">// TRANSMISSION_REQUEST</p>
+        <h2 class="text-3xl md:text-5xl font-display font-bold text-earth-50">
+          Let's <span class="text-seismic">Connect</span>
+        </h2>
+        <p class="text-earth-400 mt-4 max-w-md mx-auto">Whether it's a project, research opportunity, or field collaboration — I'm always open to exploring new depths.</p>
+      </div>
+
+      <div class="geo-card p-8 md:p-12 reveal reveal-delay-1">
+        <form id="contactForm" class="space-y-6">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-mono text-earth-400 mb-2">NAME</label>
+              <input type="text" placeholder="Your Name" class="w-full px-4 py-3 bg-earth-950/50 border border-earth-700/30 rounded-lg text-earth-100 placeholder-earth-600 focus:border-seismic/50 focus:outline-none focus:ring-1 focus:ring-seismic/20 transition-all" required>
+            </div>
+            <div>
+              <label class="block text-sm font-mono text-earth-400 mb-2">EMAIL</label>
+              <input type="email" placeholder="your@email.com" class="w-full px-4 py-3 bg-earth-950/50 border border-earth-700/30 rounded-lg text-earth-100 placeholder-earth-600 focus:border-seismic/50 focus:outline-none focus:ring-1 focus:ring-seismic/20 transition-all" required>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-mono text-earth-400 mb-2">SUBJECT</label>
+            <input type="text" placeholder="What's this about?" class="w-full px-4 py-3 bg-earth-950/50 border border-earth-700/30 rounded-lg text-earth-100 placeholder-earth-600 focus:border-seismic/50 focus:outline-none focus:ring-1 focus:ring-seismic/20 transition-all" required>
+          </div>
+          <div>
+            <label class="block text-sm font-mono text-earth-400 mb-2">MESSAGE</label>
+            <textarea rows="5" placeholder="Tell me about your project or opportunity..." class="w-full px-4 py-3 bg-earth-950/50 border border-earth-700/30 rounded-lg text-earth-100 placeholder-earth-600 focus:border-seismic/50 focus:outline-none focus:ring-1 focus:ring-seismic/20 transition-all resize-none" required></textarea>
+          </div>
+          <button type="submit" class="w-full py-3.5 bg-seismic text-earth-950 font-semibold rounded-lg hover:bg-seismic-light transition-all duration-300 flex items-center justify-center gap-2 group">
+            Send Transmission
+            <i data-lucide="send" class="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+          </button>
+        </form>
+        <div id="formSuccess" class="hidden text-center py-8">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-seismic/10 border border-seismic/30 flex items-center justify-center">
+            <i data-lucide="check" class="w-8 h-8 text-seismic"></i>
+          </div>
+          <h3 class="text-xl font-display font-bold text-earth-50 mb-2">Transmission Received!</h3>
+          <p class="text-earth-400">Thank you for reaching out. I'll respond as soon as possible.</p>
+        </div>
+      </div>
+
+      <!-- Social Links -->
+      <div class="flex items-center justify-center gap-6 mt-12 reveal reveal-delay-2">
+        <a href="#" class="group w-12 h-12 rounded-xl bg-earth-900/50 border border-earth-700/30 flex items-center justify-center hover:border-seismic/40 hover:bg-seismic/5 transition-all duration-300">
+          <i data-lucide="linkedin" class="w-5 h-5 text-earth-400 group-hover:text-seismic transition-colors"></i>
+        </a>
+        <a href="#" class="group w-12 h-12 rounded-xl bg-earth-900/50 border border-earth-700/30 flex items-center justify-center hover:border-seismic/40 hover:bg-seismic/5 transition-all duration-300">
+          <i data-lucide="github" class="w-5 h-5 text-earth-400 group-hover:text-seismic transition-colors"></i>
+        </a>
+        <a href="mailto:mohamed@example.com" class="group w-12 h-12 rounded-xl bg-earth-900/50 border border-earth-700/30 flex items-center justify-center hover:border-seismic/40 hover:bg-seismic/5 transition-all duration-300">
+          <i data-lucide="mail" class="w-5 h-5 text-earth-400 group-hover:text-seismic transition-colors"></i>
+        </a>
+        <a href="#" class="group w-12 h-12 rounded-xl bg-earth-900/50 border border-earth-700/30 flex items-center justify-center hover:border-seismic/40 hover:bg-seismic/5 transition-all duration-300">
+          <i data-lucide="twitter" class="w-5 h-5 text-earth-400 group-hover:text-seismic transition-colors"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="relative py-8 border-t border-earth-800/30">
+    <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-6 h-6 rounded-full border border-seismic/50 flex items-center justify-center">
+          <div class="w-1.5 h-1.5 bg-seismic rounded-full"></div>
+        </div>
+        <span class="font-mono text-xs text-earth-500">GEO::PORTFOLIO v2.0</span>
+      </div>
+      <p class="text-xs text-earth-600">
+        © 2025 Mohamed Ahmed Hassan · Crafted with seismic precision
+      </p>
+      <div class="flex items-center gap-1 text-earth-600">
+        <span class="font-mono text-[10px]">DEPTH:</span>
+        <span class="font-mono text-[10px] text-seismic" id="depthCounter">0m</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // =======================
+    // Seismic Wave Canvas
+    // =======================
+    const canvas = document.getElementById('waveCanvas');
+    const ctx = canvas.getContext('2d');
+    let animationFrame;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    let time = 0;
+    function drawWaves() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Multiple wave layers with different properties
+      const waves = [
+        { amplitude: 30, frequency: 0.003, speed: 0.015, y: canvas.height * 0.4, color: 'rgba(0, 180, 216, 0.08)', lineWidth: 2 },
+        { amplitude: 20, frequency: 0.005, speed: 0.025, y: canvas.height * 0.5, color: 'rgba(0, 180, 216, 0.06)', lineWidth: 1.5 },
+        { amplitude: 40, frequency: 0.002, speed: 0.01, y: canvas.height * 0.6, color: 'rgba(0, 119, 182, 0.07)', lineWidth: 2.5 },
+        { amplitude: 15, frequency: 0.007, speed: 0.03, y: canvas.height * 0.7, color: 'rgba(0, 180, 216, 0.04)', lineWidth: 1 },
+        { amplitude: 25, frequency: 0.004, speed: 0.02, y: canvas.height * 0.8, color: 'rgba(199, 123, 48, 0.06)', lineWidth: 1.5 },
+        { amplitude: 35, frequency: 0.0025, speed: 0.018, y: canvas.height * 0.75, color: 'rgba(0, 119, 182, 0.05)', lineWidth: 2 },
+      ];
+
+      waves.forEach(wave => {
+        ctx.beginPath();
+        ctx.strokeStyle = wave.color;
+        ctx.lineWidth = wave.lineWidth;
+
+        for (let x = 0; x < canvas.width; x++) {
+          const y = wave.y + Math.sin(x * wave.frequency + time * wave.speed) * wave.amplitude
+            + Math.sin(x * wave.frequency * 1.5 + time * wave.speed * 0.7) * wave.amplitude * 0.5;
+          if (x === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      });
+
+      // Seismic impulse spikes (occasional vertical lines mimicking seismic traces)
+      const spikeCount = 8;
+      for (let i = 0; i < spikeCount; i++) {
+        const xPos = (canvas.width / spikeCount) * i + canvas.width / spikeCount / 2;
+        const spikeHeight = 20 + Math.sin(time * 0.02 + i) * 15;
+        const yCenter = canvas.height * 0.55;
+
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(0, 180, 216, ${0.03 + Math.sin(time * 0.015 + i * 0.5) * 0.02})`;
+        ctx.lineWidth = 1;
+
+        for (let y = yCenter - spikeHeight; y < yCenter + spikeHeight; y += 3) {
+          const offset = Math.sin(y * 0.1 + time * 0.02) * (3 + Math.abs(y - yCenter) * 0.1);
+          if (y === yCenter - spikeHeight) ctx.moveTo(xPos + offset, y);
+          else ctx.lineTo(xPos + offset, y);
+        }
+        ctx.stroke();
+      }
+
+      time += 1;
+      animationFrame = requestAnimationFrame(drawWaves);
+    }
+    drawWaves();
+
+    // =======================
+    // Floating Particles
+    // =======================
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const count = window.innerWidth < 768 ? 15 : 30;
+
+      for (let i = 0; i < count; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.bottom = '-10px';
+        particle.style.animationDuration = (8 + Math.random() * 12) + 's';
+        particle.style.animationDelay = (Math.random() * 10) + 's';
+        particle.style.width = (1 + Math.random() * 2) + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.opacity = 0.2 + Math.random() * 0.4;
+        container.appendChild(particle);
+      }
+    }
+    createParticles();
+
+    // =======================
+    // Scroll Reveal
+    // =======================
+    const revealElements = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+    revealElements.forEach(el => observer.observe(el));
+
+    // =======================
+    // Skill Bars Animation
+    // =======================
+    const skillBars = document.querySelectorAll('.skill-wave-fill');
+    const skillObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const width = entry.target.getAttribute('data-width');
+          entry.target.style.width = width + '%';
+        }
+      });
+    }, { threshold: 0.5 });
+
+    skillBars.forEach(bar => skillObserver.observe(bar));
+
+    // =======================
+    // Navbar Scroll Effect
+    // =======================
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+
+      if (currentScroll > 80) {
+        navbar.style.background = 'rgba(10, 9, 8, 0.9)';
+        navbar.style.backdropFilter = 'blur(20px)';
+        navbar.style.borderBottom = '1px solid rgba(0, 180, 216, 0.1)';
+      } else {
+        navbar.style.background = 'transparent';
+        navbar.style.backdropFilter = 'none';
+        navbar.style.borderBottom = 'none';
+      }
+
+      // Active nav link based on sections
+      const sections = ['hero', 'about', 'education', 'arsenal', 'fieldwork', 'contact'];
+      sections.forEach(id => {
+        const section = document.getElementById(id);
+        const link = document.querySelector(`a[href="#${id}"]`);
+        if (section && link) {
+          const rect = section.getBoundingClientRect();
+          if (rect.top <= 150 && rect.bottom >= 150) {
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+          }
+        }
+      });
+
+      lastScroll = currentScroll;
+    });
+
+    // =======================
+    // Mobile Menu
+    // =======================
+    const menuBtn = document.getElementById('menuBtn');
+    const closeMenuBtn = document.getElementById('closeMenu');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+
+    menuBtn.addEventListener('click', () => mobileMenu.classList.add('open'));
+    closeMenuBtn.addEventListener('click', () => mobileMenu.classList.remove('open'));
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+    });
+
+    // =======================
+    // Contact Form
+    // =======================
+    const form = document.getElementById('contactForm');
+    const formSuccess = document.getElementById('formSuccess');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      form.style.display = 'none';
+      formSuccess.classList.remove('hidden');
+      formSuccess.style.display = 'block';
+    });
+
+    // =======================
+    // Depth Counter (scroll)
+    // =======================
+    const depthCounter = document.getElementById('depthCounter');
+    window.addEventListener('scroll', () => {
+      const scrollPercent = window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight);
+      const depth = Math.round(scrollPercent * 5000);
+      depthCounter.textContent = depth + 'm';
+    });
+
+    // Re-init lucide after DOM is ready (for form success icon etc)
+    setTimeout(() => lucide.createIcons(), 100);
+  </script>
 </body>
 </html>
